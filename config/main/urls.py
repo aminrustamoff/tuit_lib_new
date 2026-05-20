@@ -127,4 +127,6 @@ urlpatterns = [
     path('dashboard/categories/add/',          views.AdminCategoryCreateView.as_view(), name='admin-category-create'),
     path('dashboard/categories/<int:pk>/edit/',   views.AdminCategoryUpdateView.as_view(), name='admin-category-edit'),
     path('dashboard/categories/<int:pk>/delete/', views.AdminCategoryDeleteView.as_view(), name='admin-category-delete'),
+    path('chat/', views.ChatView.as_view(), name='chat'),
+    path('chat/ask/', views.ChatAskView.as_view(), name='chat-ask'),
 ]

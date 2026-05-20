@@ -25,6 +25,10 @@ from django.db.models import Q
 from django.utils import timezone
 from django.http import HttpResponseForbidden
 
+from .services import run_ai_prompt
+import json
+
+
 from .models import (
     User, Book, Category, SavedBook,
     TeacherWork, TeacherRequest, AdminMessage, SiteStatistics
@@ -810,3 +814,40 @@ class AdminCategoryDeleteView(AdminRequiredMixin, View):
         cat.delete()
         messages.success(request, f"'{name}' kategoriyasi o'chirildi.")
         return redirect('main:admin-category-list')
+    
+class ChatView(LoginRequiredMixin, View):
+    template_name = 'main/chat.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class ChatAskView(LoginRequiredMixin, View):
+    def post(self, request):
+        from django.http import JsonResponse
+        from .models import Book, TeacherWork
+
+        try:
+            data     = json.loads(request.body)
+            prompt   = data.get('prompt', '').strip()
+            history  = data.get('history', [])
+
+            if not prompt:
+                return JsonResponse({'error': 'Savol bo\'sh'}, status=400)
+
+            # Mavjud kitoblar va o'qituvchi ishlarini yuborish
+            book_names = list(Book.objects.filter(is_active=True).values_list('title', flat=True))
+            work_names = list(TeacherWork.objects.filter(is_published=True).values_list('title', flat=True))
+            all_names  = book_names + work_names
+
+            answer = run_ai_prompt(
+                prompt=prompt,
+                user=request.user,
+                book_name_list=all_names,
+                history=history,
+            )
+
+            return JsonResponse({'answer': answer})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

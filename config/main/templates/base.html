@@ -1,9 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Online Kutubxona{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/css/online_library_theme.css' %}">
+    <script src="{% static 'main/js/theme_toggle.js' %}" defer></script>
 </head>
 <body>
 
@@ -21,6 +24,8 @@
             <a href="{% url 'main:admin-dashboard' %}">Admin panel</a>
             &nbsp;|&nbsp;
         {% endif %}
+        <a href="{% url 'main:chat' %}">AI Yordamchi</a>
+        &nbsp;|&nbsp;
         <a href="{% url 'main:profile' %}">Profil ({{ user.username }})</a>
         &nbsp;|&nbsp;
         <form method="post" action="{% url 'main:logout' %}" style="display:inline">

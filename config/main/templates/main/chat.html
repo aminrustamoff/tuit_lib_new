@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Yordamchi{% endblock %}
+
+{% block content %}
+<h1>AI Yordamchi</h1>
+<p>Kitoblar va qo'llanmalar haqida savol bering.</p>
+
+<div id="chat-box" style="border:1px solid #ccc; height:400px; overflow-y:auto; padding:10px;">
+</div>
+
+<br>
+<textarea id="user-input" rows="3" cols="60" placeholder="Savolingizni yozing..."></textarea>
+<br>
+<button onclick="sendMessage()">Yuborish</button>
+
+<script>
+    const history = [];
+
+    async function sendMessage() {
+        const input = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const prompt = input.value.trim();
+        if (!prompt) return;
+
+        // Foydalanuvchi xabarini ko'rsat
+        chatBox.innerHTML += `<p><b>Siz:</b> ${prompt}</p>`;
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        history.push({ role: 'user', text: prompt });
+
+        try {
+            const res = await fetch("{% url 'main:chat-ask' %}", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: JSON.stringify({ prompt, history })
+            });
+
+            const data = await res.json();
+
+            if (data.answer) {
+                chatBox.innerHTML += `<p><b>AI:</b> ${data.answer}</p>`;
+                history.push({ role: 'assistant', text: data.answer });
+            } else {
+                chatBox.innerHTML += `<p><b>Xato:</b> ${data.error}</p>`;
+            }
+        } catch (e) {
+            chatBox.innerHTML += `<p><b>Xato:</b> Ulanishda muammo.</p>`;
+        }
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Enter tugmasi bilan yuborish
+    document.getElementById('user-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+</script>
+{% endblock %}
