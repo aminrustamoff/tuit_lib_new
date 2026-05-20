@@ -25,7 +25,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.http import HttpResponseForbidden
 
-from .services import run_ai_prompt
+from .services.run_ai_prompt import run_ai_prompt
 import json
 
 

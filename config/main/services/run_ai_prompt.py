@@ -1,18 +1,9 @@
 from django.conf import settings
 from django.utils.html import strip_tags
-from google import genai
+import google.generativeai as genai
 
 
 def build_history_text(history):
-    """
-    Frontenddan kelgan oxirgi xabarlarni AI prompt ichiga qo'shish uchun tayyorlaydi.
-    history formati:
-    [
-        {"role": "user", "text": "Salom"},
-        {"role": "assistant", "text": "Salom! Qanday yordam beray?"}
-    ]
-    """
-
     if not history:
         return "Oldingi yozishmalar mavjud emas."
 
@@ -28,7 +19,6 @@ def build_history_text(history):
         if not text:
             continue
 
-        # AI javoblari HTML bo'lishi mumkin, tarix uchun text holatiga keltiramiz
         text = strip_tags(text)
 
         if role == "user":
@@ -51,10 +41,7 @@ def run_ai_prompt(prompt, user=None, book_name_list=None, history=None):
             "API key: https://aistudio.google.com/apikey"
         )
 
-    try:
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
-    except Exception as e:
-        raise ValueError(f"Gemini client tayyorlanishida xatolik: {str(e)}")
+    genai.configure(api_key=settings.GEMINI_API_KEY)
 
     books_text = (
         ", ".join(book_name_list)
@@ -68,7 +55,6 @@ def run_ai_prompt(prompt, user=None, book_name_list=None, history=None):
         "Sen foydalanuvchiga sodda, aniq va foydali javob beradigan yordamchisan. "
         "Foydalanuvchi savoliga javob berishda, agar kerak bo'lsa, quyidagi kitob nomlaridan foydalanib tavsiyalar ber. "
         f"Kitoblar: {books_text} "
-        "Agar foydalanuvchi kitob tavsiyasi so'rasa, mavjud kitoblardan birini tavsiya qil. "
         "Agar foydalanuvchi boshqa kitob haqida savol bersa, bu kitob mavjud emasligini ayt va unga aniq shu kitobga o'xshash mavjud kitoblarni tavsiya qil. "
         "Agar foydalanuvchi kitoblardan tashqari savol bersa, unga 'men kitoblar haqida savolga javob berishga ixtisoslashgan yordamchiman, iltimos, kitoblar bilan bog'liq savol bering' deb javob ber. "
         "Agar hech qanday kitob mavjud bo'lmasa, foydalanuvchiga kitoblar mavjud emasligini bildir. "
@@ -87,9 +73,9 @@ Hozirgi foydalanuvchi savoli:
 {prompt}
 """
 
-    response = client.models.generate_content(
-        model=settings.GEMINI_MODEL,
-        contents=full_prompt
-    )
-
-    return response.text or "AI javob qaytarmadi."
+    try:
+        model    = genai.GenerativeModel(settings.GEMINI_MODEL)
+        response = model.generate_content(full_prompt)
+        return response.text or "AI javob qaytarmadi."
+    except Exception as e:
+        raise ValueError(f"Gemini so'rovida xatolik: {str(e)}")

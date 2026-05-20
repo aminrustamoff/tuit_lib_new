@@ -1,49 +1,39 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Admin Panel{% endblock %}</title>
-</head>
-<body>
+{% extends 'admin_panel/base_admin.html' %}
 
-<nav>
-    <strong>Admin Panel</strong>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-dashboard' %}">Bosh sahifa</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-user-list' %}">Foydalanuvchilar</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-teacher-requests' %}">Arizalar</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-book-list' %}">Kitoblar</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-category-list' %}">Kategoriyalar</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:admin-send-message' %}">Xabar yuborish</a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'main:home' %}">Saytga qaytish</a>
-    &nbsp;|&nbsp;
-    <form method="post" action="{% url 'main:logout' %}" style="display:inline">
-        {% csrf_token %}
-        <button type="submit">Chiqish</button>
-    </form>
-</nav>
+{% block title %}Admin — Bosh sahifa{% endblock %}
+
+{% block content %}
+
+<h1>Admin bosh sahifasi</h1>
+
+<h2>Umumiy statistika</h2>
+<ul>
+    <li>Jami foydalanuvchilar: <strong>{{ total_users }}</strong></li>
+    <li>Talabalar: <strong>{{ total_students }}</strong></li>
+    <li>O'qituvchilar: <strong>{{ total_teachers }}</strong></li>
+    <li>Kitoblar: <strong>{{ total_books }}</strong></li>
+    <li>O'qituvchi ishlari: <strong>{{ total_works }}</strong></li>
+    <li>
+        Kutilayotgan arizalar: <strong>{{ pending_requests }}</strong>
+        {% if pending_requests %}
+            — <a href="{% url 'main:admin-teacher-requests' %}">Ko'rish</a>
+        {% endif %}
+    </li>
+</ul>
 
 <hr>
 
-{% if messages %}
-    {% for message in messages %}
-        <p><strong>[{{ message.tags|upper }}]</strong> {{ message }}</p>
-    {% endfor %}
-    <hr>
+<h2>So'nggi ro'yxatdan o'tganlar</h2>
+{% if recent_users %}
+    <ul>
+        {% for u in recent_users %}
+            <li>
+                <a href="{% url 'main:admin-user-detail' u.pk %}">{{ u.username }}</a>
+                ({{ u.get_role_display }})
+                — {{ u.date_joined|date:"d.m.Y H:i" }}
+            </li>
+        {% endfor %}
+    </ul>
 {% endif %}
 
-<main>
-    {% block content %}{% endblock %}
-</main>
-
-<hr>
-<footer><p>Admin Panel</p></footer>
-
-</body>
-</html>
+{% endblock %}
