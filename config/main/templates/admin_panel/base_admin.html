@@ -1,10 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/css/online_library_admin_theme.css' %}">
+    <script src="{% static 'main/js/theme_admin_toggle.js' %}" defer></script>
 </head>
-<body>
+<body class="admin-layout">
 
 <nav>
     <strong>Admin Panel</strong>

@@ -1,0 +1,930 @@
+/* Online Kutubxona — Light/Dark theme + animations
+   Ulanish: <link rel="stylesheet" href="{% static 'main/css/online_library_theme.css' %}">
+*/
+
+:root {
+  --primary:       #0a6e68;
+  --primary-light: #0fa39a;
+  --primary-dark:  #084f4b;
+  --primary-glow:  rgba(10, 110, 104, 0.10);
+  --primary-glow2: rgba(15, 163, 154, 0.16);
+  --accent:        #e8a838;
+  --accent-glow:   rgba(232, 168, 56, 0.16);
+  --surface:       #f5f9f8;
+  --surface-low:   #e8f2f0;
+  --surface-card:  #ffffff;
+  --text:          #0c1f1d;
+  --text-secondary:#2a4a47;
+  --text-muted:    #5d8480;
+  --border:        rgba(10, 110, 104, 0.12);
+  --border-strong: rgba(10, 110, 104, 0.24);
+  --shadow-xs:     0 1px 3px rgba(10, 110, 104, 0.08);
+  --shadow:        0 8px 28px rgba(10, 110, 104, 0.12);
+  --shadow-lg:     0 18px 52px rgba(10, 110, 104, 0.18);
+  --error:         #c0392b;
+  --error-glow:    rgba(192, 57, 43, 0.10);
+  --success:       #047857;
+  --radius-sm:     10px;
+  --radius:        16px;
+  --radius-lg:     24px;
+  --reader-font:   17px;
+  color-scheme: light;
+}
+
+.dark {
+  --primary:       #29c9be;
+  --primary-light: #50dfd5;
+  --primary-dark:  #1aa89f;
+  --primary-glow:  rgba(41, 201, 190, 0.10);
+  --primary-glow2: rgba(80, 223, 213, 0.14);
+  --accent:        #f0b84a;
+  --accent-glow:   rgba(240, 184, 74, 0.14);
+  --surface:       #060f0e;
+  --surface-low:   #0d1f1d;
+  --surface-card:  #0f2422;
+  --text:          #e2f7f5;
+  --text-secondary:#a8d4d0;
+  --text-muted:    #78aaa6;
+  --border:        rgba(41, 201, 190, 0.14);
+  --border-strong: rgba(41, 201, 190, 0.28);
+  --shadow-xs:     0 1px 3px rgba(0,0,0,0.30);
+  --shadow:        0 8px 28px rgba(0,0,0,0.35);
+  --shadow-lg:     0 18px 52px rgba(0,0,0,0.48);
+  --error:         #fb7185;
+  --error-glow:    rgba(251, 113, 133, 0.10);
+  --success:       #34d399;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-size: var(--reader-font);
+  line-height: 1.65;
+  background:
+    radial-gradient(circle at 10% 0%, var(--primary-glow2), transparent 28rem),
+    radial-gradient(circle at 92% 18%, var(--accent-glow), transparent 24rem),
+    linear-gradient(135deg, var(--surface), var(--surface-low));
+  transition: background-color 240ms ease, color 240ms ease;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.38;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, #000, transparent 72%);
+}
+
+a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 5px;
+  transition: color 180ms ease, background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+a:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+nav {
+  width: min(1120px, calc(100% - 28px));
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-card) 88%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px) saturate(1.2);
+  animation: navDrop 520ms ease both;
+}
+
+nav a,
+nav button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+nav a {
+  padding: 8px 12px;
+}
+
+nav a:first-child {
+  margin-right: 4px;
+  padding: 9px 14px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  box-shadow: 0 10px 24px var(--primary-glow2);
+  text-decoration: none;
+}
+
+nav a:not(:first-child):hover {
+  background: var(--primary-glow);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+nav form {
+  display: inline-flex !important;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+main {
+  width: min(1040px, calc(100% - 28px));
+  margin: 24px auto;
+  padding: clamp(20px, 4vw, 36px);
+  background: color-mix(in srgb, var(--surface-card) 92%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  animation: pageFadeUp 520ms ease both;
+}
+
+footer {
+  width: min(1040px, calc(100% - 28px));
+  margin: 20px auto 32px;
+  padding: 18px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--surface-card) 70%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+hr {
+  height: 1px;
+  margin: 24px 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+}
+
+body > hr {
+  display: none;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 12px;
+  color: var(--text);
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h2 {
+  margin-top: 26px;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+}
+
+h3 {
+  margin-top: 22px;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+}
+
+p {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+}
+
+strong {
+  color: var(--text);
+}
+
+em {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 800;
+}
+
+ul {
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+li {
+  padding: 16px 18px;
+  color: var(--text-secondary);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-card) 94%, transparent), color-mix(in srgb, var(--surface-low) 74%, transparent));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+li:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow);
+}
+
+main > form {
+  margin: 18px 0;
+  padding: clamp(16px, 3vw, 24px);
+  display: grid;
+  gap: 14px;
+  background: color-mix(in srgb, var(--surface-card) 92%, var(--surface-low));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+main > form p {
+  margin: 0;
+}
+
+label,
+main > form p:first-line {
+  color: var(--text);
+  font-weight: 700;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 6px;
+  padding: 11px 13px;
+  color: var(--text);
+  background: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--surface) 55%, transparent);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--primary);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 4px var(--primary-glow2);
+}
+
+button,
+a[href*="register"],
+a[href*="login"],
+a[href*="book-list"],
+a[href*="work-create"],
+a[href*="my-works"],
+a[href*="profile-edit"],
+a[href$=".url"] {
+  cursor: pointer;
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+  border: 0;
+  padding: 10px 16px;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 999px;
+  box-shadow: 0 12px 26px var(--primary-glow2);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px var(--primary-glow2);
+  filter: brightness(1.04);
+}
+
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active {
+  transform: translateY(0);
+}
+
+main > p > a,
+main > form + p a,
+li a,
+p a {
+  border-radius: 10px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+img[width="100"],
+img[alt="Avatar"] {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+img[width="150"] {
+  width: 170px;
+  aspect-ratio: 3 / 4;
+}
+
+span {
+  color: var(--error);
+  font-weight: 700;
+}
+
+body > p {
+  width: min(1040px, calc(100% - 28px));
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  color: var(--text-secondary);
+  background: var(--accent-glow);
+  border: 1px solid color-mix(in srgb, var(--accent) 44%, transparent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
+}
+
+.js-theme-toggle {
+  margin-left: auto;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--surface-card), var(--surface-low));
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+.js-theme-toggle:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+}
+
+.js-reveal {
+  opacity: 0;
+  transform: translateY(14px) scale(0.99);
+}
+
+.js-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 520ms ease, transform 520ms ease;
+}
+
+@keyframes pageFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes navDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --reader-font: 16px;
+  }
+
+  nav {
+    position: static;
+    justify-content: center;
+  }
+
+  nav a,
+  nav button {
+    flex: 1 1 auto;
+  }
+
+  .js-theme-toggle {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
+  main,
+  footer {
+    width: min(100% - 18px, 1040px);
+  }
+
+  main > form {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .js-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* =========================================================
+   ADMIN PANEL QO'SHIMCHA STILLARI
+   Ushbu qism admin_panel/base_admin.html va undan extends
+   qiladigan sahifalar uchun: foydalanuvchilar, kitoblar,
+   kategoriyalar, arizalar, xabarlar, formalar, delete sahifalar.
+   ========================================================= */
+
+body.admin-layout {
+  --admin-max: 1180px;
+}
+
+body.admin-layout nav {
+  width: min(var(--admin-max), calc(100% - 28px));
+  align-items: center;
+}
+
+body.admin-layout nav > strong,
+nav > strong:first-child {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 6px;
+  padding: 9px 15px;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background:
+    linear-gradient(135deg, var(--primary-dark), var(--primary-light)),
+    linear-gradient(135deg, var(--primary-glow2), transparent);
+  border-radius: 999px;
+  box-shadow: 0 12px 26px var(--primary-glow2);
+}
+
+body.admin-layout nav a:first-of-type {
+  color: var(--primary);
+  background: transparent;
+  box-shadow: none;
+}
+
+body.admin-layout nav a:first-of-type:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  box-shadow: 0 10px 24px var(--primary-glow2);
+}
+
+body.admin-layout main,
+body.admin-layout footer {
+  width: min(var(--admin-max), calc(100% - 28px));
+}
+
+body.admin-layout main {
+  position: relative;
+  overflow: hidden;
+}
+
+body.admin-layout main::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -110px;
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  opacity: 0.18;
+  background: radial-gradient(circle, var(--primary-light), transparent 68%);
+  filter: blur(2px);
+}
+
+body.admin-layout h1 {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+body.admin-layout h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(180px, 55%);
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), transparent);
+}
+
+/* Admin dashboard / statistika / oddiy info bloklar */
+body.admin-layout main > p,
+body.admin-layout main > div,
+body.admin-layout main > section {
+  position: relative;
+}
+
+body.admin-layout main > p:has(a[href*="create"]),
+body.admin-layout main > p:has(a[href*="send-message"]),
+body.admin-layout main > p:has(a[href*="admin-dashboard"]),
+body.admin-layout main > p:has(a[href*="list"]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Admin paneldagi asosiy action linklar */
+body.admin-layout main > p a[href*="create"],
+body.admin-layout main > p a[href*="send-message"],
+body.admin-layout main > p a[href*="admin-send-message"],
+body.admin-layout main > p a[href*="admin-dashboard"],
+body.admin-layout main > p a[href*="list"],
+body.admin-layout main > p a[href*="home"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 9px 14px;
+  color: var(--text);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--surface-card), var(--surface-low));
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-xs);
+}
+
+body.admin-layout main > p a[href*="create"]:hover,
+body.admin-layout main > p a[href*="send-message"]:hover,
+body.admin-layout main > p a[href*="admin-send-message"]:hover,
+body.admin-layout main > p a[href*="admin-dashboard"]:hover,
+body.admin-layout main > p a[href*="list"]:hover,
+body.admin-layout main > p a[href*="home"]:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-color: transparent;
+  box-shadow: 0 14px 30px var(--primary-glow2);
+  transform: translateY(-2px);
+}
+
+/* Filter va qidiruv formalarini admin panelga moslash */
+body.admin-layout form[method="get"] {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  align-items: end;
+}
+
+body.admin-layout form[method="get"] button {
+  min-height: 46px;
+}
+
+body.admin-layout form[method="get"] a {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  color: var(--primary);
+  background: var(--primary-glow);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+body.admin-layout form[method="get"] a:hover {
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+}
+
+/* Admin jadvallar */
+table {
+  width: 100%;
+  margin: 18px 0;
+  border: 0 !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  display: block;
+  overflow-x: auto;
+  color: var(--text-secondary);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-card) 96%, transparent), color-mix(in srgb, var(--surface-low) 78%, transparent));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+table::-webkit-scrollbar {
+  height: 9px;
+}
+
+table::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+thead,
+tbody,
+tr {
+  width: 100%;
+}
+
+th,
+td {
+  padding: 14px 16px !important;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+th {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  background:
+    linear-gradient(135deg, var(--primary-glow), var(--accent-glow));
+}
+
+tr {
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+tbody tr:hover {
+  background: var(--primary-glow);
+}
+
+td:first-child,
+th:first-child {
+  padding-left: 18px !important;
+}
+
+td:last-child,
+th:last-child {
+  padding-right: 18px !important;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+td a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+td a:hover {
+  text-decoration: none;
+  background: var(--primary-glow);
+}
+
+/* Amallar ustunidagi linklar: tahrirlash / o'chirish */
+td:last-child a {
+  margin: 2px 0;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-card) 72%, transparent);
+}
+
+td:last-child a[href*="edit"]:hover,
+td:last-child a[href*="detail"]:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-color: transparent;
+}
+
+td:last-child a[href*="delete"]:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--error), #ef4444);
+  border-color: transparent;
+}
+
+/* Admin detail sahifalaridagi ro'yxatlar */
+body.admin-layout main > ul {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+body.admin-layout main > ul li {
+  min-height: 76px;
+}
+
+body.admin-layout h2 + ul,
+body.admin-layout h3 + p,
+body.admin-layout h3 + ul {
+  padding: 16px 18px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-card) 90%, var(--surface-low));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
+}
+
+body.admin-layout h3 + p {
+  white-space: pre-line;
+}
+
+/* Tasdiqlash / rad etish kabi yonma-yon formalar */
+body.admin-layout form[style*="display:inline"] {
+  display: inline-flex !important;
+  width: auto;
+  margin: 6px 8px 6px 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body.admin-layout form[style*="display:inline"] button {
+  min-height: 44px;
+}
+
+body.admin-layout form[action*="reject"] button,
+body.admin-layout form[action*="delete"] button,
+body.admin-layout button[type="submit"]:has(+ a[href*="delete"]) {
+  background: linear-gradient(135deg, var(--error), #ef4444);
+  box-shadow: 0 12px 26px var(--error-glow);
+}
+
+body.admin-layout form[action*="approve"] button {
+  background: linear-gradient(135deg, var(--success), var(--primary-light));
+}
+
+/* Admin formalar: kitob/kategoriya/xabar/ariza */
+body.admin-layout main > form[method="post"] {
+  max-width: 760px;
+}
+
+body.admin-layout main > form[method="post"] p {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body.admin-layout main > form[method="post"] a {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  color: var(--text-secondary);
+  background: var(--surface-low);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+body.admin-layout main > form[method="post"] a:hover {
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+}
+
+/* Xabarlar va ogohlantirishlar */
+body.admin-layout body > p,
+body.admin-layout .message,
+body.admin-layout [class*="message"] {
+  border-left: 4px solid var(--accent);
+}
+
+/* JS qo'shadigan table wrapper uchun */
+.js-table-wrap {
+  width: 100%;
+  margin: 18px 0;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.js-table-wrap table {
+  margin: 0;
+  box-shadow: none;
+}
+
+/* Admin uchun kichik badge ko'rinishi: matnli holatlar */
+body.admin-layout li strong,
+body.admin-layout td strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 2px 8px;
+  color: var(--text);
+  background: var(--accent-glow);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  border-radius: 999px;
+}
+
+/* Delete / confirm sahifalari */
+body.admin-layout main:has(form[action*="delete"]),
+body.admin-layout main:has(h1) {
+  isolation: isolate;
+}
+
+@supports not selector(:has(*)) {
+  body.admin-layout main > p a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 9px 14px;
+    border-radius: 999px;
+  }
+}
+
+@media (max-width: 860px) {
+  body.admin-layout nav {
+    position: static;
+    gap: 8px;
+  }
+
+  body.admin-layout nav > strong,
+  nav > strong:first-child {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  body.admin-layout form[method="get"] {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 0.95rem;
+  }
+
+  th,
+  td {
+    padding: 12px 13px !important;
+  }
+
+  body.admin-layout main > ul {
+    grid-template-columns: 1fr;
+  }
+}
