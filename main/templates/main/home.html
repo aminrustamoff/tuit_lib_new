@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Bosh sahifa — Online Kutubxona{% endblock %}
+
+{% block content %}
+
+<h1>Online Kutubxona</h1>
+<p>Kitoblar va o'quv materiallari bir joyda.</p>
+
+<hr>
+
+<!-- Statistika -->
+{% if stats %}
+<h2>Sayt statistikasi</h2>
+<ul>
+    <li>Jami kitoblar: <strong>{{ stats.total_books }}</strong></li>
+    <li>Jami foydalanuvchilar: <strong>{{ stats.total_users }}</strong></li>
+    <li>O'qituvchilar: <strong>{{ stats.total_teachers }}</strong></li>
+    <li>O'qituvchi ishlari: <strong>{{ stats.total_works }}</strong></li>
+</ul>
+<hr>
+{% endif %}
+
+<!-- Kategoriyalar -->
+{% if categories %}
+<h2>Kategoriyalar</h2>
+<ul>
+    {% for cat in categories %}
+        <li>
+            {{ cat.icon }} <a href="{% url 'main:category-books' cat.slug %}">{{ cat.name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+<hr>
+{% endif %}
+
+<!-- So'nggi kitoblar -->
+<h2>So'nggi kitoblar</h2>
+{% if new_books %}
+    <ul>
+        {% for book in new_books %}
+            <li>
+                <a href="{% url 'main:book-detail' book.pk %}">{{ book.title }}</a>
+                — {{ book.author }}
+                {% if book.category %}({{ book.category.name }}){% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <p><a href="{% url 'main:book-list' %}">Barcha kitoblarni ko'rish &rarr;</a></p>
+{% else %}
+    <p>Hozircha kitoblar mavjud emas.</p>
+{% endif %}
+
+<hr>
+
+<!-- Registratsiya bo'limi -->
+{% if not user.is_authenticated %}
+<h2>Ro'yxatdan o'ting</h2>
+<p>Kitoblarni saqlash va ko'proq imkoniyatlardan foydalanish uchun ro'yxatdan o'ting.</p>
+<p>
+    <a href="{% url 'main:register' %}">Ro'yxatdan o'tish</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:login' %}">Kirish</a>
+</p>
+{% endif %}
+
+{% endblock %}

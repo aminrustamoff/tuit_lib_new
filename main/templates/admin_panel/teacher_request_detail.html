@@ -1,0 +1,41 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Ariza ko'rish{% endblock %}
+
+{% block content %}
+
+<p><a href="{% url 'main:admin-teacher-requests' %}">&larr; Arizalar ro'yxati</a></p>
+
+<h1>Ariza: {{ req.user.username }}</h1>
+
+<ul>
+    <li><strong>Foydalanuvchi:</strong>
+        <a href="{% url 'main:admin-user-detail' req.user.pk %}">{{ req.user.username }}</a>
+        ({{ req.user.get_full_name|default:"—" }})
+    </li>
+    <li><strong>Email:</strong> {{ req.user.email|default:"—" }}</li>
+    <li><strong>Holat:</strong> {{ req.get_status_display }}</li>
+    <li><strong>Yuborilgan:</strong> {{ req.created_at|date:"d.m.Y H:i" }}</li>
+    {% if req.reviewed_by %}
+        <li><strong>Ko'rib chiqqan:</strong> {{ req.reviewed_by.username }}</li>
+        <li><strong>Ko'rib chiqilgan sana:</strong> {{ req.reviewed_at|date:"d.m.Y H:i" }}</li>
+    {% endif %}
+</ul>
+
+<h3>Motivatsiya xati</h3>
+<p>{{ req.motivation }}</p>
+
+{% if req.status == 'pending' %}
+    <hr>
+    <form method="post" action="{% url 'main:admin-approve-request' req.pk %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit">Tasdiqlash</button>
+    </form>
+    &nbsp;&nbsp;
+    <form method="post" action="{% url 'main:admin-reject-request' req.pk %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit">Rad etish</button>
+    </form>
+{% endif %}
+
+{% endblock %}

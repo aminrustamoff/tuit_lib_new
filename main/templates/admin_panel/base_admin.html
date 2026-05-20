@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/css/online_library_admin_theme.css' %}">
+    <script src="{% static 'main/js/theme_admin_toggle.js' %}" defer></script>
+</head>
+<body class="admin-layout">
+
+<nav>
+    <strong>Admin Panel</strong>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-dashboard' %}">Bosh sahifa</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-user-list' %}">Foydalanuvchilar</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-teacher-requests' %}">Arizalar</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-book-list' %}">Kitoblar</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-category-list' %}">Kategoriyalar</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:admin-send-message' %}">Xabar yuborish</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:home' %}">Saytga qaytish</a>
+    &nbsp;|&nbsp;
+    <form method="post" action="{% url 'main:logout' %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit">Chiqish</button>
+    </form>
+</nav>
+
+<hr>
+
+{% if messages %}
+    {% for message in messages %}
+        <p><strong>[{{ message.tags|upper }}]</strong> {{ message }}</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<hr>
+<footer><p>Admin Panel</p></footer>
+
+</body>
+</html>

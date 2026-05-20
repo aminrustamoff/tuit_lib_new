@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+
+{% block content %}
+
+<h1>Ro'yxatdan o'tish</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}<br>
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <span>Xato: {{ error }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+            <p>Xato: {{ error }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <button type="submit">Ro'yxatdan o'tish</button>
+</form>
+
+<p>Allaqachon akkauntingiz bormi? <a href="{% url 'main:login' %}">Kiring</a></p>
+
+{% endblock %}

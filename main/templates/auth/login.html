@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Kirish{% endblock %}
+
+{% block content %}
+
+<h1>Tizimga kirish</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}<br>
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <span>Xato: {{ error }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+    {% endfor %}
+
+    <button type="submit">Kirish</button>
+</form>
+
+<p>Akkauntingiz yo'qmi? <a href="{% url 'main:register' %}">Ro'yxatdan o'ting</a></p>
+
+{% endblock %}
