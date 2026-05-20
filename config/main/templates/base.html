@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Online Kutubxona{% endblock %}</title>
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'main:home' %}"><strong>Online Kutubxona</strong></a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:book-list' %}">Kitoblar</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'main:work-list' %}">O'qituvchi ishlari</a>
+
+    &nbsp;&nbsp;&nbsp;
+
+    {% if user.is_authenticated %}
+        {% if user.role == 'admin' %}
+            <a href="{% url 'main:admin-dashboard' %}">Admin panel</a>
+            &nbsp;|&nbsp;
+        {% endif %}
+        <a href="{% url 'main:profile' %}">Profil ({{ user.username }})</a>
+        &nbsp;|&nbsp;
+        <form method="post" action="{% url 'main:logout' %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit">Chiqish</button>
+        </form>
+    {% else %}
+        <a href="{% url 'main:login' %}">Kirish</a>
+        &nbsp;|&nbsp;
+        <a href="{% url 'main:register' %}">Ro'yxatdan o'tish</a>
+    {% endif %}
+</nav>
+
+<hr>
+
+{% if messages %}
+    {% for message in messages %}
+        <p><strong>[{{ message.tags|upper }}]</strong> {{ message }}</p>
+    {% endfor %}
+    <hr>
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<hr>
+<footer>
+    <p>Online Kutubxona &copy; 2025</p>
+</footer>
+
+</body>
+</html>

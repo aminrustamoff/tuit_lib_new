@@ -1,0 +1,28 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Xabar yuborish{% endblock %}
+
+{% block content %}
+
+<h1>Foydalanuvchiga xabar yuborish</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <p>
+            {{ field.label_tag }}<br>
+            {{ field }}<br>
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <span>Xato: {{ error }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </p>
+    {% endfor %}
+
+    <button type="submit">Yuborish</button>
+    <a href="{% url 'main:admin-dashboard' %}">Bekor qilish</a>
+</form>
+
+{% endblock %}
