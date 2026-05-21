@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.html import strip_tags
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 
 def build_history_text(history):
@@ -41,7 +42,8 @@ def run_ai_prompt(prompt, user=None, book_name_list=None, history=None):
             "API key: https://aistudio.google.com/apikey"
         )
 
-    genai.configure(api_key=settings.GEMINI_API_KEY)
+    # Yangi SDK: genai.Client orqali ishlash
+    client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
     books_text = (
         ", ".join(book_name_list)
@@ -74,8 +76,15 @@ Hozirgi foydalanuvchi savoli:
 """
 
     try:
-        model    = genai.GenerativeModel(settings.GEMINI_MODEL)
-        response = model.generate_content(full_prompt)
+        response = client.models.generate_content(
+            model=settings.GEMINI_MODEL,
+            contents=full_prompt,
+            config=types.GenerateContentConfig(
+                # Ixtiyoriy: temperature, max_output_tokens kabi sozlamalar
+                temperature=0.7,
+                max_output_tokens=2048,
+            ),
+        )
         return response.text or "AI javob qaytarmadi."
     except Exception as e:
         raise ValueError(f"Gemini so'rovida xatolik: {str(e)}")
