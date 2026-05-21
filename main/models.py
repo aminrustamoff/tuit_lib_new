@@ -25,7 +25,7 @@ class User(AbstractUser):
         verbose_name="Rol",
     )
     avatar = models.ImageField(
-        upload_to='avatars/',
+        upload_to='media/avatars/',
         null=True,
         blank=True,
         verbose_name="Profil rasmi",
@@ -187,7 +187,7 @@ class Book(models.Model):
         verbose_name="Kategoriya",
     )
     cover_image = models.ImageField(
-        upload_to='book_covers/',
+        upload_to='media/book_covers/',
         null=True,
         blank=True,
         verbose_name="Muqova rasmi",
@@ -199,7 +199,7 @@ class Book(models.Model):
         verbose_name="Nashr sanasi",
     )
     file = models.FileField(
-        upload_to='books/',
+        upload_to='media/books/',
         null=True,
         blank=True,
         verbose_name="Kitob fayli (PDF va h.k.)",
@@ -298,11 +298,11 @@ class TeacherWork(models.Model):
         verbose_name="Qisqacha tavsif",
     )
     file = models.FileField(
-        upload_to='teacher_works/',
+        upload_to='media/teacher_works/',
         verbose_name="Fayl",
     )
     cover_image = models.ImageField(
-        upload_to='work_covers/',
+        upload_to='media/work_covers/',
         null=True,
         blank=True,
         verbose_name="Muqova rasmi",
